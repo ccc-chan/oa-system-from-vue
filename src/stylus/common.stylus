@@ -1,0 +1,5 @@
+.contentBg
+  margin 0.15rem
+  background #fff
+.mainContent
+  overflow hidden

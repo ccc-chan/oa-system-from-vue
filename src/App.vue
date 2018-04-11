@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Zonav></Zonav>
+    <!-- <Zonav></Zonav> -->
     <keep-alive>
         <router-view></router-view>
     </keep-alive>
@@ -9,11 +9,11 @@
 
 <script>
 import Login from './components/login'
-import Znav from './components/nav'
+// import Znav from './components/nav'
 export default {
   components:{
     Login : Login,
-    Zonav:Znav
+    // Zonav:Znav
   }
 }
 </script>

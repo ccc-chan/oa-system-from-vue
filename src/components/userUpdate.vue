@@ -1,34 +1,19 @@
 <template>
-    <div class="user">
+    <div class="userUpdate">
         <div>
-            <div class="userHeader">
-                <img src="../../static/img/header.png">
-                <label>{{user.name}}</label>
-            </div>
+            <mt-header title="修改个人信息">
+              <router-link to="/user" slot="left">
+                <mt-button icon="back">返回</mt-button>
+              </router-link>
+            </mt-header>
             <div class="userContent">
                 <div class="userBlock">
-                    <mt-cell title="工号" :value="user.uid"></mt-cell>
-                    <mt-cell title="身份证号" :value="user.idcard"></mt-cell>
-                    <mt-cell title="性别" :value="user.sex"></mt-cell>
-                    <mt-cell title="聘用性质" :value="user.prxzval"></mt-cell>
-                </div>
-                <div class="userBlock">
-                    <mt-cell title="出生年月" :value="user.birth"></mt-cell>
-                    <mt-cell title="政治面貌" :value="user.politicaloutlook"></mt-cell>
-                    <mt-cell title="民族" :value="user.nation_name"></mt-cell>
-                    <mt-cell title="籍贯" :value="user.nativeplace"></mt-cell>
-                </div>
-                <div class="userBlock">
-                    <mt-cell title="所在公司" :value="user.gs_name"></mt-cell>
-                    <mt-cell title="部门" :value="user.bm_name"></mt-cell>
-                    <mt-cell title="岗位" :value="user.gw_name"></mt-cell>
-                    <mt-cell title="员工状态" :value="user.status"></mt-cell>
-                </div>
-                <div class="userBlock">
-                    <mt-cell title="添加信息" to="/userUpdate" is-link value="添加"></mt-cell>
+                    <mt-field label="电话" :value="user.phone" v-model="user.phone"></mt-field>
+                    <mt-field label="邮箱" :value="user.email" v-model="user.email"></mt-field>
+                    <mt-field label="卡号" :value="user.salarycard" v-model="user.salarycard"></mt-field>
                 </div>
                 <div class="userBtn">
-                    <mt-button type="primary" @click="logout()">退出登陆</mt-button>
+                    <mt-button type="primary" @click="update()">修改</mt-button>
                 </div>
             </div>
         </div>
@@ -40,8 +25,10 @@ import { Toast } from 'mint-ui';
 export default {
     data () {
         return {
-            selected: 'user',
             user:'',
+            phone:'',
+            email:'',
+            salarycard:''
         }
     },
     created(){
@@ -52,9 +39,22 @@ export default {
         });
     },
     methods: {
-        logout(){
-            localStorage.clear();
-            this.$router.push("/");
+        update(){
+            var _self = this;
+            this.$axios({
+                method:'put',
+                url:'http://api.7171.la/v1/Employee/UserInfo',
+                headers:{
+                    "token":localStorage.token
+                },
+                data:{
+                    "phone":_self.user.phone,
+                    "email":_self.user.email,
+                    "salarycard":_self.user.salarycard
+                }
+            }).then(function (data) {
+                Toast(data.data.info);
+            });
         }
     }
 }
@@ -63,7 +63,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" rel="stylesheet/stylus">
     @import "../stylus/base.stylus";
-    .user
+    .userUpdate
         height 100%
         >div
             padding-bottom 55px
@@ -89,7 +89,6 @@ export default {
                     font-weight bold
                     letter-spacing 0.02rem
             .userContent
-                background #f1f1f1
                 padding 2%
                 .userBlock
                     width 96%
@@ -104,8 +103,6 @@ export default {
                         border-bottom 1px solid #ddd
                     .mint-field-core
                         text-align right
-                    >a
-                        display block
                 .userBtn button
                     display block
                     width 86%

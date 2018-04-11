@@ -8,7 +8,7 @@
 
             </mt-tab-container-item>
         </mt-tab-container>
-        <Zfooter></Zfooter>
+        <!-- <Zfooter></Zfooter> -->
     </div>
 </template>
 
@@ -21,10 +21,10 @@ export default {
             selected: 'user'
         }
     },
-    components:{
+    /*components:{
         Zfooter: Zfooter,
         Zonav:Znav,
-    },
+    },*/
     methods: {
         
     }

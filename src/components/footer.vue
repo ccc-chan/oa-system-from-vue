@@ -43,33 +43,47 @@ export default {
       this.message = str;
     },
     address(url){
-      if (url == "/index") {
-        this.message = 'index';
-        this.homeState = '../../static/img/homeActive.png';
-        this.userState = '../../static/img/user.png';
-      }else if(url == '/user'){
+      if(url == '/user' || url == '/userUpdate'){
         this.message = 'user';
         this.userState = '../../static/img/userActive.png';
         this.homeState = '../../static/img/home.png';
+      }else if(url == '/'){
+        this.message = 'login';
+        this.userState = '../../static/img/userActive.png';
+        this.homeState = '../../static/img/home.png';
+      }else{
+        this.message = 'index';
+        this.homeState = '../../static/img/homeActive.png';
+        this.userState = '../../static/img/user.png';
       }
     }
   },
   watch: {
     message: function (val, oldVal) {
       // 通过 val 的变更来确定去向
+      //console.log(val)
       switch(val){
         case 'index':
           this.$router.push('/index');
         break;
         case 'user':
           this.$router.push('/user');
+          break;
+        case 'login':
+          this.$router.push('/');
         break;
       }
     },
     $route (to, from) {
       this.uri = this.$route.path;
       this.address(this.uri);
-      this.message = this.uri.slice(1);
+      /*if(this.uri.slice(1) == 'user' || this.uri.slice(1) == 'userUpdate'){
+        this.message = 'user';
+      }else if(this.uri.slice(1) == ''){
+        this.message = 'login';
+      }else{
+        this.message = 'index';
+      }*/
     }
   },
 }

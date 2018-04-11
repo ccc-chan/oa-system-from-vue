@@ -1,31 +1,12 @@
 <template>
     <div class="nav" :class="{active: active == 'active' }">
         <ul>
-            <li>
+            <li v-for="(item, index) in menu" class="item">
                 <i class="iconfont icon-guanliyuan_guanliyuanrizhi"></i>
-                招生业务管理系统
-            </li>
-            <li class="item">
-                任务分配
-            </li>
-            <li class="item">
-                生源信息（项目经理）
-            </li>
-            <li>
-                <i class="iconfont icon-guanliyuan_guanliyuanrizhi"></i>
-                办公系统
-            </li>
-            <li class="item">
-                文件列表
-            </li>
-            <li class="item">
-                会议纪要
-            </li>
-            <li class="item">
-                每周总结及计划
-            </li>
-            <li class="item">
-                每日总结及计划
+                <span>{{item.name}}</span>
+                <ul>
+                    <li v-for="item1 in item._data" @click="forward(item1.web_mca)">{{item1.name}}</li>
+                </ul>
             </li>
         </ul>
     </div>
@@ -33,43 +14,65 @@
 
 <script>
 import {swipe} from '../../static/js/jquery.touchSwipe.js'
+import store from '../store/store'
 export default {
     data () {
         return {
             active:'off',
+            menu:''
         }
     },
-    mounted:function(){
-        /*$("body").swipe( {
+    created(){
+        var _self = this;
+        this.getMenu();
+        $("body").swipe( {
             swipe:function(event, direction, distance, duration, fingerCount) {
-                //$(this).text("你用"+fingerCount+"个手指以"+duration+"秒的速度向" + direction + "滑动了" +distance+ "像素 " );
+                //$(this).text("你用"+fingerCount+"个手指以"+duration+"秒的速度向" + direction + "滑动了" +distance+ "像素 ");
                 _self.selected(direction);
             },
-        });*/
+        });
+    },
+    mounted(){
+        var _self = this;
+        $(".nav").click(function(){
+            _self.active = 'off';
+        });
+        $(".nav>ul").click(function(e){
+            e.stopPropagation();
+        });
     },
     methods: {
-        selected:function(str){
+        forward(url){
+            //console.log(url);
+            this.active = 'off';
+            this.$router.push({ path: url });
+        },
+        selected(str){
             if (str == 'right') {
                 this.active = 'active';
             }else{
                 this.active = 'off';
             }
-        }
+        },
+        //获取菜单
+        getMenu(){
+            var _self = this;
+            this.$axios.get('http://api.7171.la/v1/Menu/getmenu', {headers:{"token":localStorage.token}})
+                .then(function(data){
+                    _self.$store.state.nav = data.data;
+                    _self.menu = _self.$store.state.nav;
+                    //console.log(data.data)
+        });
+    }
     },
     watch: {
         $route (to, from) {
           this.uri = this.$route.path;
-          //this.address(this.uri);
           if(this.uri != '/login'){
             var _self = this;
-            $("body").swipe( {
-                swipe:function(event, direction, distance, duration, fingerCount) {
-                    //$(this).text("你用"+fingerCount+"个手指以"+duration+"秒的速度向" + direction + "滑动了" +distance+ "像素 " );
-                    _self.selected(direction);
-                },
-            });
+            
           }
-        }
+        },
   },
 }
 </script>
@@ -83,7 +86,6 @@ export default {
         z-index 2
         top 0
         bottom 0
-        //left -100%
         right 100%
         height 100%
         width 100%
@@ -97,18 +99,26 @@ export default {
             width 2rem
             height 100%
             background #6e9cbf
-            // #6e9cbf
-            li
+            >li
                 color #fff
-                border-bottom 1px solid #fff
                 line-height 0.26rem
                 font-size 0.14rem
-                padding 0.2rem
+                margin 0.2rem 0
+                span
+                    display inline-block
+                    padding-bottom 0.1rem
                 i
-                    padding-right 0.1rem
-            .item
-                padding-left 0.5rem
-                padding-right 0.1rem
+                    padding 0 0.2rem
+                a
+                    color #fff
+                li
+                    color #fff
+                    border-bottom 1px solid #fff
+                    line-height 0.26rem
+                    font-size 0.14rem
+                    padding 0.1rem 0.2rem 0.1rem 0.6rem
+                    &:first-of-type
+                        border-top 1px solid #fff
     .active
         right 0%
 </style>
